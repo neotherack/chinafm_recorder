@@ -1,11 +1,10 @@
 import requests
 
-def send_audio(audio_path, title="no title", duration=None):
-  api_key = get_api_key()
-  chat_id = get_chat_id()
+def send_audio(audio_path, title="no title", duration=None, creds_path="/tmp"):
+  api_key = get_api_key(creds_path)
+  chat_id = get_chat_id(creds_path)
 
   url = f"https://api.telegram.org/bot{api_key}/sendAudio"
-  print(url)
   payload = {
     "chat_id": chat_id,
     "title": title
@@ -18,7 +17,6 @@ def send_audio(audio_path, title="no title", duration=None):
     'audio': open(audio_path,'rb')
   }
   response = requests.request("POST", url, data=payload, files=files,stream=True)
-  print(response.text)
 
 def load_conf(filename):
   f = open(filename, "r")
@@ -26,8 +24,8 @@ def load_conf(filename):
   f.close()
   return data
 
-def get_api_key():
-  return load_conf("api_key.dat")
+def get_api_key(path):
+  return load_conf(f"{path}/api_key.dat")
 
-def get_chat_id():
-  return load_conf("chat_id.dat")
+def get_chat_id(path):
+  return load_conf(f"{path}/chat_id.dat")
